@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // User profile rules
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Client rules: must be authenticated and only access own client records
+    match /clients/{clientId} {
+      allow read: if request.auth != null && resource.data.lawyerId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.lawyerId == request.auth.uid;
+      allow update: if request.auth != null && resource.data.lawyerId == request.auth.uid && request.resource.data.lawyerId == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.lawyerId == request.auth.uid;
+    }
+    
+    // Hearing rules: must be authenticated and only access own hearing records
+    match /hearings/{hearingId} {
+      allow read: if request.auth != null && resource.data.lawyerId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.lawyerId == request.auth.uid;
+      allow update: if request.auth != null && resource.data.lawyerId == request.auth.uid && request.resource.data.lawyerId == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.lawyerId == request.auth.uid;
+    }
+    
+    // Fee payment rules: must be authenticated and only access own payment records
+    match /feePayments/{paymentId} {
+      allow read: if request.auth != null && resource.data.lawyerId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.lawyerId == request.auth.uid;
+      allow update: if request.auth != null && resource.data.lawyerId == request.auth.uid && request.resource.data.lawyerId == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.lawyerId == request.auth.uid;
+    }
+  }
+}

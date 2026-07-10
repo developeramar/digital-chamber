@@ -1,0 +1,6 @@
+{
+  "name": "Digital Chamber",
+  "description": "A digital chamber app that replaces traditional paper diaries for district court lawyers, helping track clients, hearings, fees, documents, and notes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
